@@ -21,3 +21,8 @@ html, body{
     padding: 0px;
     margin: 0px;
 }
+
+#map {
+    height: 300px; 
+    width:300px;
+  }
