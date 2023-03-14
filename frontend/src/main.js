@@ -7,6 +7,12 @@ const app = new App({
   target: document.getElementById('app'),
 })
 
-Neutralino.init()
+function onWindowClose() {
+  Neutralino.app.exit();
+}
+
+Neutralino.init();
+
+Neutralino.events.on("windowClose", onWindowClose);
 
 export default app
