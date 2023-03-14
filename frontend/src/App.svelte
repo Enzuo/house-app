@@ -1,7 +1,7 @@
 <script>
   import svelteLogo from './assets/svelte.svg'
   import Counter from './lib/Counter.svelte'
-  import Neutralino from '@neutralinojs/lib'
+  import * as Neutralino from '@neutralinojs/lib'
   import { onMount } from 'svelte';
 
 
@@ -37,7 +37,7 @@
       <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
     </a>
   </div>
-  <h1>Vite + Svelte</h1>
+  <h1>Vite + Svelte + Neut</h1>
 
   <div class="card">
     <Counter />

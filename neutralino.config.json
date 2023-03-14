@@ -74,8 +74,12 @@
   },
   "cli": {
     "binaryName": "housesappN",
-    "resourcesPath": "/frontend/build/",
+    "resourcesPath": "/frontend/dist/",
     "clientLibrary": "/frontend/public/__neutralino_globals.js",
+    "frontendLibrary": {
+      "patchFile": "/frontend/index.html",
+      "devUrl": "http://localhost:5173"
+    },
     "extensionsPath": "/extensions/",
     "binaryVersion": "4.10.0",
     "clientVersion": "3.8.2"

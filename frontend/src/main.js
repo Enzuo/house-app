@@ -1,11 +1,7 @@
 import './app.css'
 import App from './App.svelte'
-import Neutralino from "@neutralinojs/lib"
+import * as Neutralino from "@neutralinojs/lib"
 
-
-const app = new App({
-  target: document.getElementById('app'),
-})
 
 function onWindowClose() {
   Neutralino.app.exit();
@@ -14,5 +10,12 @@ function onWindowClose() {
 Neutralino.init();
 
 Neutralino.events.on("windowClose", onWindowClose);
+
+
+const app = new App({
+  target: document.getElementById('app'),
+})
+
+
 
 export default app

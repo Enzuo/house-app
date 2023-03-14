@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx @neutralinojs/neu build",
+    "dev": "npx @neutralinojs/neu run --frontend-lib-dev",
+    "dev-front": "cd frontend && npm run dev",
     "build-front" : "cd frontend && npm run build",
+    "build": "npx @neutralinojs/neu build",
     "start": "npx @neutralinojs/neu run"
   },
   "author": "",
