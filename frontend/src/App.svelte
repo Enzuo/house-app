@@ -1,6 +1,7 @@
 <script>
   import svelteLogo from './assets/svelte.svg'
   import Counter from './lib/Counter.svelte'
+  import HousePopup from './components/HousePopup.svelte'
   import { loadHouses } from './logic/dataLoader'
   import { onMount } from 'svelte'
   import * as L from "leaflet"
@@ -47,11 +48,23 @@
     for(var i=0; i<houses.length; i++){
       var house = houses[i]
       var marker = L.marker(house.position).addTo(map)
-      marker.bindPopup(house.title + '<br>' + house.price + '<br>' + house.surface)
+      marker.bindPopup(generatePopupHandler(house))
       // marker.on('click', generateClickHandler(house));
     } 
   }
 
+  function generatePopupHandler(house){
+    return () => {
+      let container = L.DomUtil.create('div');
+      let c = new HousePopup({
+        target: container,
+        props: {
+          house
+        }
+      });
+      return container
+    }
+  }
 
 </script>
 
