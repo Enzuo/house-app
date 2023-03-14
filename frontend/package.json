@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@neutralinojs/lib": "^3.8.2",
-    "csv-parse": "^5.3.6"
+    "leaflet": "^1.9.3",
+    "papaparse": "^5.4.0"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.2",

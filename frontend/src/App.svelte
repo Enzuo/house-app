@@ -1,32 +1,63 @@
 <script>
   import svelteLogo from './assets/svelte.svg'
   import Counter from './lib/Counter.svelte'
-  import * as Neutralino from '@neutralinojs/lib'
-  import { onMount } from 'svelte';
+  import { loadHouses } from './logic/dataLoader'
+  import { onMount } from 'svelte'
+  import * as L from "leaflet"
 
 
-  console.log('test')
+  let mymap
+  let myhouses
 
-  async function loadData () {
-    console.log('load data')
-    let data
-    try {
-      data = await Neutralino.filesystem.readFile('./houses.csv')
-      console.log('called neutralino')
-    }
-    catch (e) {
-      console.log('error', e)
-    }
-    console.log(`Content: ${data}`)
-    return data
-  }
+  // async function loadData () {
+  //   console.log('load data')
+  //   let data
+  //   try {
+  //     data = await Neutralino.filesystem.readFile('./houses.csv')
+  //     console.log('called neutralino')
+  //   }
+  //   catch (e) {
+  //     console.log('error', e)
+  //   }
+  //   console.log(`Content: ${data}`)
+  //   return data
+  // }
+
+  $: displayHouses(mymap, myhouses) 
 
   onMount(async () => {
-    loadData()
+    myhouses = await loadHouses()
 	});
+
+  function mapAction(element){
+    mymap = L.map(element, {preferCanvas: true }).setView([46.31, -0.99], 13)
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(mymap)
+
+    return mymap
+  }
+
+  function displayHouses(map, houses) {
+    console.log("displayHouses")
+    if(!houses) return
+    if(!map) return
+    for(var i=0; i<houses.length; i++){
+      var house = houses[i]
+      var marker = L.marker(house.position).addTo(map)
+      marker.bindPopup(house.title + '<br>' + house.price + '<br>' + house.surface)
+      // marker.on('click', generateClickHandler(house));
+    } 
+  }
 
 
 </script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
 
 <main>
   <div>
@@ -50,6 +81,8 @@
   <p class="read-the-docs">
     Click on the Vite and Svelte logos to learn more
   </p>
+
+  <div class="map" style="height:300px;width:300px" use:mapAction />
 </main>
 
 <style>
