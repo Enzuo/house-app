@@ -1,0 +1,14 @@
+{
+  "name": "housesappn",
+  "version": "1.0.0",
+  "description": "``` npx @neutralinojs/neu run ```",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx @neutralinojs/neu build",
+    "build-front" : "cd frontend && npm run build",
+    "start": "npx @neutralinojs/neu run"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "defaultMode": "window",
   "port": 0,
-  "documentRoot": "/resources/",
+  "documentRoot": "/frontend/dist/",
   "url": "/",
   "enableServer": true,
   "enableNativeAPI": true,
@@ -16,6 +16,7 @@
   "nativeAllowList": [
     "app.*",
     "os.*",
+    "filesystem.*",
     "debug.log"
   ],
   "globalVariables": {
@@ -73,9 +74,9 @@
   },
   "cli": {
     "binaryName": "housesappN",
-    "resourcesPath": "/resources/",
+    "resourcesPath": "/frontend/build/",
+    "clientLibrary": "/frontend/public/__neutralino_globals.js",
     "extensionsPath": "/extensions/",
-    "clientLibrary": "/resources/js/neutralino.js",
     "binaryVersion": "4.10.0",
     "clientVersion": "3.8.2"
   }
