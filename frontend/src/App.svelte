@@ -3,6 +3,7 @@
   import Counter from './lib/Counter.svelte'
   import HousePopup from './components/HousePopup.svelte'
   import HouseDetails from './components/HouseDetails.svelte'
+  import StatusBar from './components/StatusBar.svelte'
   import { loadHouses, generateImageStructure } from './logic/dataLoader'
   import { onMount } from 'svelte'
   import * as L from "leaflet"
@@ -12,6 +13,8 @@
   let myhouses
 
   let currentHouse
+
+  let status = ""
 
   // async function loadData () {
   //   console.log('load data')
@@ -86,46 +89,11 @@
    crossorigin=""/>
 
 <main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer"> 
-      <img src="/vite.svg" class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer"> 
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte + Neut</h1>
-
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
-
   <div class="map" style="height:300px;width:300px" use:mapAction />
-  <HouseDetails house={currentHouse}></HouseDetails>
+  <HouseDetails on:status={(e) => status = e.detail.text} house={currentHouse}></HouseDetails>
+  <StatusBar text={status}></StatusBar>
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-  }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
-  }
+
 </style>

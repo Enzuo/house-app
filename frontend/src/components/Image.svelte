@@ -14,3 +14,9 @@
 {#if data}
     <img alt="img" src="data:image/jpeg;base64,{data}"/>
 {/if}
+
+<style>
+    img {
+        width:100%;
+    }
+</style>
