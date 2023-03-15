@@ -82,3 +82,85 @@ function parseHouseCsv(csvHouses) {
 
 
 
+export async function generateImageStructure (folder) {
+  let entries = await Neutralino.filesystem.readDirectory("./");
+  console.log('Content: ', entries);
+  for(var i=2; i < entries.length; i++){
+    let entry = entries[i]
+    if(entry.type === 'DIRECTORY'){
+      let subDirectory = await Neutralino.filesystem.readDirectory("./"+entry.entry);
+      for(var j=2; j<subDirectory.length; j++){
+        if(subDirectory[j].entry === folder){
+          let result = await parseImagesFolder("./"+entry.entry+"/"+folder)
+          console.log("result")
+        }
+      }
+    }
+  }
+}
+
+async function parseImagesFolder (folder) {
+  let files = await Neutralino.filesystem.readDirectory(folder)
+      
+  let floors = []
+  let photoFiles = files.reduce((acc, f, index) => {
+    if(index < 2 ){
+      return acc
+    }
+    if(f.entry.indexOf('floor') >= 0){
+      floors.push(f.entry)
+    }
+    else{
+      acc.push(f.entry)
+    }
+    return acc
+  }, [])
+
+  console.log("photoFiles", photoFiles)
+
+  let rooms = extractRoomsFromFiles(photoFiles)
+  return {rooms, photoFiles, floors}
+}
+
+
+
+
+function addRoomPhoto(rooms, roomName, fileName){
+  let room = rooms.find(r => r.name === roomName)
+  if(room){
+    room.photos.push(fileName)
+  }
+  else {
+    rooms.push({name : roomName, photos : [fileName]})
+  }
+}
+
+/**
+ * 
+ * @param {string[]} photoFiles 
+ */
+function extractRoomsFromFiles(photoFiles){
+  // extract rooms from photo files 
+  let rooms = 
+  photoFiles.reduce((acc, fileName) => {
+    let photoName = fileName.match(/\w+/)[0]
+
+    let underscore = photoName.match(/_/)
+    if(underscore){
+      let roomName = photoName.split('_')[0]
+      addRoomPhoto(acc, roomName, fileName)
+    }
+    else {
+      let numbers = photoName.match(/\d+/)
+      if(numbers){
+        let roomName = photoName.split(/\d+/)[0]
+        addRoomPhoto(acc, roomName, fileName)
+      }
+      else{
+        addRoomPhoto(acc, photoName, fileName)
+      }
+    }
+    return acc
+  }, [])
+  return rooms
+}
