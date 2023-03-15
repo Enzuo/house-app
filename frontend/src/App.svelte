@@ -2,6 +2,7 @@
   import svelteLogo from './assets/svelte.svg'
   import Counter from './lib/Counter.svelte'
   import HousePopup from './components/HousePopup.svelte'
+  import HouseDetails from './components/HouseDetails.svelte'
   import { loadHouses } from './logic/dataLoader'
   import { onMount } from 'svelte'
   import * as L from "leaflet"
@@ -9,6 +10,8 @@
 
   let mymap
   let myhouses
+
+  let currentHouse
 
   // async function loadData () {
   //   console.log('load data')
@@ -24,10 +27,12 @@
   //   return data
   // }
 
-  $: displayHouses(mymap, myhouses) 
+  // breaking reactivity ? TODO investigate
+  // $: displayHouses(mymap, myhouses) 
 
   onMount(async () => {
     myhouses = await loadHouses()
+    displayHouses(mymap, myhouses) 
 	});
 
   function mapAction(element){
@@ -49,7 +54,7 @@
       var house = houses[i]
       var marker = L.marker(house.position).addTo(map)
       marker.bindPopup(generatePopupHandler(house))
-      // marker.on('click', generateClickHandler(house));
+      marker.on('click', generateClickHandler(house));
     } 
   }
 
@@ -63,6 +68,13 @@
         }
       });
       return container
+    }
+  }
+
+  function generateClickHandler(house){
+    return () => {
+      console.log("house click")
+      currentHouse = house
     }
   }
 
@@ -96,6 +108,7 @@
   </p>
 
   <div class="map" style="height:300px;width:300px" use:mapAction />
+  <HouseDetails house={currentHouse}></HouseDetails>
 </main>
 
 <style>
