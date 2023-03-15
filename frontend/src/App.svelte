@@ -59,10 +59,11 @@
     for(var i=0; i<houses.length; i++){
       var house = houses[i]
       console.log("pos", house.position, house)
-      if(!house.position[0]) continue
+      if(!house.position[0]) continue // House data with no position, TODO might want to throw an error here
       var marker = L.marker(house.position).addTo(map)
       marker.bindPopup(generatePopupHandler(house))
-      marker.on('click', generateClickHandler(house));
+      marker.on('click', generateClickHandler(house))
+      marker.on('mouseover', generateOverHandler(house))
     } 
   }
 
@@ -83,6 +84,13 @@
     return () => {
       console.log("house click")
       currentHouse = house
+    }
+  }
+
+  function generateOverHandler(house){
+    return () => {
+      console.log('over')
+      status = house.title + " / " + house.price + " / " + house.surface + " m²"
     }
   }
 
@@ -116,7 +124,7 @@
     position: fixed;
     z-index: 1000;
     bottom: 0;
-    width: 100vh;
+    width: 100vw;
     background: white;
     border-top: 1px solid lightgrey;
     padding: 2px 5px 5px 5px;

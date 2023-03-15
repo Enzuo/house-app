@@ -10,8 +10,6 @@
 
     function addOverHandler (room) {
         return () => {
-            console.log(room.name)
-
             dispatch('status', {
                 text: room.name
             });

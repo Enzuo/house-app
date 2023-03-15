@@ -12,8 +12,8 @@
     {#if house}
     
         House {house.title}
-
-        <ImageList on:status rooms={house.files.rooms} path={house.folderPath}></ImageList>
-    
+        {#if house.files}
+            <ImageList on:status rooms={house.files.rooms} path={house.folderPath}></ImageList>
+        {/if}
     {/if}
 </div>
