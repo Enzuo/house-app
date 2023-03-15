@@ -102,8 +102,12 @@
 
 <main>
   <div class="content">
-    <div class="map" style="height:100vh;width:300px" use:mapAction />
-    <HouseDetails on:status={(e) => status = e.detail.text} house={currentHouse}></HouseDetails>
+    <div class="map-panel">
+      <div class="map" style="height:100vh;width:300px" use:mapAction />
+    </div>
+    <div class="detail-panel">
+      <HouseDetails on:status={(e) => status = e.detail.text} house={currentHouse}></HouseDetails>
+    </div>
   </div>
   <div class="footer">
     <StatusBar text={status}></StatusBar>
@@ -119,6 +123,9 @@
   .content {
     flex-grow:1;
     display:flex;
+  }
+  .detail-panel {
+    overflow: hidden;
   }
   .footer {
     position: fixed;

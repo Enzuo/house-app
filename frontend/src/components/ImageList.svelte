@@ -16,6 +16,14 @@
         }
     }
 
+    function addClickHandler (imagePath) {
+        return () => {
+            dispatch('click', {
+                imagePath
+            })
+        }
+    }
+
 
 </script>
 
@@ -24,7 +32,7 @@
     {#each rooms as room}
     <div class="room" on:mouseover={addOverHandler(room)} on:focus={addOverHandler}>
         {#each room.photos as photo}
-            <div class="image">
+            <div class="image" on:click={addClickHandler(path + '/' + photo)}>
                 <Image path={path + '/' + photo}/>
             </div>
         {/each}
