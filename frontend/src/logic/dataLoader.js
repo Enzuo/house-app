@@ -82,21 +82,30 @@ function parseHouseCsv(csvHouses) {
 
 
 
-export async function generateImageStructure (folder) {
-  let entries = await Neutralino.filesystem.readDirectory("./");
-  console.log('Content: ', entries);
-  for(var i=2; i < entries.length; i++){
-    let entry = entries[i]
+export async function generateImageStructure (folder = "./", houses) {
+
+  let mainDirectory = await Neutralino.filesystem.readDirectory(folder);
+  for(var i=2; i < mainDirectory.length; i++){
+    let entry = mainDirectory[i]
+
     if(entry.type === 'DIRECTORY'){
       let subDirectory = await Neutralino.filesystem.readDirectory("./"+entry.entry);
       for(var j=2; j<subDirectory.length; j++){
-        if(subDirectory[j].entry === folder){
-          let result = await parseImagesFolder("./"+entry.entry+"/"+folder)
-          console.log("result")
+
+        for(var k=0; k< houses.length; k++){
+          let house = houses[k]
+          if(subDirectory[j].entry === house.folder){
+            let folderPath = folder + entry.entry + "/" + house.folder
+            let result = await parseImagesFolder(folderPath)
+            house.folderPath = folderPath
+            house.files = result
+          }
         }
       }
     }
   }
+  console.log('houses with files', houses)
+  return houses
 }
 
 async function parseImagesFolder (folder) {
@@ -163,4 +172,28 @@ function extractRoomsFromFiles(photoFiles){
     return acc
   }, [])
   return rooms
+}
+
+// TODO add cache
+export async function loadImage(path){
+  console.log("load", path)
+  let data
+  try {
+    data = await Neutralino.filesystem.readBinaryFile(path)
+  }
+  catch(e) {
+    console.error(e)
+  }
+  console.log("image data" , data)
+  return _arrayBufferToBase64(data)
+}
+
+function _arrayBufferToBase64( buffer ) {
+  var binary = '';
+  var bytes = new Uint8Array( buffer );
+  var len = bytes.byteLength;
+  for (var i = 0; i < len; i++) {
+      binary += String.fromCharCode( bytes[ i ] );
+  }
+  return window.btoa( binary );
 }

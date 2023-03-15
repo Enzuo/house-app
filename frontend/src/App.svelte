@@ -32,6 +32,7 @@
 
   onMount(async () => {
     myhouses = await loadHouses()
+    generateImageStructure("./", myhouses)
     displayHouses(mymap, myhouses) 
 	});
 
@@ -75,7 +76,6 @@
     return () => {
       console.log("house click")
       currentHouse = house
-      generateImageStructure(house.folder)
     }
   }
 
