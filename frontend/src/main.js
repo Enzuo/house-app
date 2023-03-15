@@ -1,4 +1,5 @@
 import './app.css'
+import './reset.css'
 import App from './App.svelte'
 import * as Neutralino from "@neutralinojs/lib"
 

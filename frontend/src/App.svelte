@@ -34,9 +34,11 @@
   // $: displayHouses(mymap, myhouses) 
 
   onMount(async () => {
+    status = "loading..."
     myhouses = await loadHouses()
-    generateImageStructure("./", myhouses)
+    await generateImageStructure("./", myhouses)
     displayHouses(mymap, myhouses) 
+    status = "Ok"
 	});
 
   function mapAction(element){
@@ -56,6 +58,8 @@
     if(!map) return
     for(var i=0; i<houses.length; i++){
       var house = houses[i]
+      console.log("pos", house.position, house)
+      if(!house.position[0]) continue
       var marker = L.marker(house.position).addTo(map)
       marker.bindPopup(generatePopupHandler(house))
       marker.on('click', generateClickHandler(house));
@@ -89,11 +93,32 @@
    crossorigin=""/>
 
 <main>
-  <div class="map" style="height:300px;width:300px" use:mapAction />
-  <HouseDetails on:status={(e) => status = e.detail.text} house={currentHouse}></HouseDetails>
-  <StatusBar text={status}></StatusBar>
+  <div class="content">
+    <div class="map" style="height:100vh;width:300px" use:mapAction />
+    <HouseDetails on:status={(e) => status = e.detail.text} house={currentHouse}></HouseDetails>
+  </div>
+  <div class="footer">
+    <StatusBar text={status}></StatusBar>
+  </div>
 </main>
 
 <style>
-
+  main {
+    min-height:100vh; 
+    display:flex;
+    flex-direction:column;
+  }
+  .content {
+    flex-grow:1;
+    display:flex;
+  }
+  .footer {
+    position: fixed;
+    z-index: 1000;
+    bottom: 0;
+    width: 100vh;
+    background: white;
+    border-top: 1px solid lightgrey;
+    padding: 2px 5px 5px 5px;
+  }
 </style>
