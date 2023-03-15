@@ -18,5 +18,6 @@
 <style>
     img {
         width:100%;
+        background:#fafafa;
     }
 </style>

@@ -122,6 +122,7 @@
   }
   .content {
     flex-grow:1;
+    max-height:100vh;
     display:flex;
   }
   .detail-panel {
