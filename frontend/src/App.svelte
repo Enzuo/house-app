@@ -36,7 +36,7 @@
   onMount(async () => {
     status = "loading..."
     myhouses = await loadHouses()
-    await generateImageStructure("./", myhouses)
+    await generateImageStructure("../", myhouses)
     displayHouses(mymap, myhouses) 
     status = "Ok"
 	});

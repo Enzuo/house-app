@@ -28,6 +28,19 @@
             <div class="">
                 <Image path={currentImage}></Image>
             </div>
+            {:else}
+            <div>
+                Prix : {house.price} 
+            </div>
+            <div>
+                Surface : {house.surface} m²
+            </div>
+            <div>
+                Surface terrain : {house.surfaceTotal} m²
+            </div>
+            <div>
+                Dossier images : {house.folderPath} - {house.folder}
+            </div>
             {/if}
         </div>
         {#if house.files}

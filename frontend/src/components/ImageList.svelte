@@ -46,6 +46,9 @@
         width:100%;
         overflow-x: scroll;
     }
+    .room {
+        display:flex;
+    }
     .room:hover {
         border:1px solid #000;
     }

@@ -48,6 +48,7 @@ function parseHouseCsv(csvHouses) {
       house.title = csvHouse['Title']
       house.price = csvHouse['Price']
       house.surface = csvHouse['Surface']
+      house.surfaceTotal = csvHouse['Surface Terrain']
       house.options = csvHouse['Options'].split(',')
       house.folder = csvHouse['Folder']
     
@@ -89,7 +90,7 @@ export async function generateImageStructure (folder = "./", houses) {
     let entry = mainDirectory[i]
 
     if(entry.type === 'DIRECTORY'){
-      let subDirectory = await Neutralino.filesystem.readDirectory("./"+entry.entry);
+      let subDirectory = await Neutralino.filesystem.readDirectory(folder+entry.entry);
       for(var j=2; j<subDirectory.length; j++){
 
         for(var k=0; k< houses.length; k++){
@@ -175,6 +176,7 @@ function extractRoomsFromFiles(photoFiles){
 }
 
 // TODO add cache
+// TODO load one by one
 export async function loadImage(path){
   console.log("load", path)
   let data
