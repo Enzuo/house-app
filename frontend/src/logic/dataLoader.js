@@ -90,7 +90,9 @@ export async function generateImageStructure (folder = "./", houses) {
     let entry = mainDirectory[i]
 
     if(entry.type === 'DIRECTORY'){
+      console.log('lets parse', folder+entry.entry)
       let subDirectory = await Neutralino.filesystem.readDirectory(folder+entry.entry);
+      console.log('sub', subDirectory)
       for(var j=2; j<subDirectory.length; j++){
 
         for(var k=0; k< houses.length; k++){
@@ -110,6 +112,7 @@ export async function generateImageStructure (folder = "./", houses) {
 }
 
 async function parseImagesFolder (folder) {
+  console.log('parse Images Folder')
   let files = await Neutralino.filesystem.readDirectory(folder)
       
   let floors = []
@@ -175,19 +178,42 @@ function extractRoomsFromFiles(photoFiles){
   return rooms
 }
 
+/* -------------------------
+ * IMAGE Loader
+ ------------------------- */
 // TODO add cache
 // TODO load one by one
+let queue = []
+
 export async function loadImage(path){
-  console.log("load", path)
-  let data
-  try {
-    data = await Neutralino.filesystem.readBinaryFile(path)
+  return new Promise((resolve, reject) => {
+    let callback = (data) => {
+      resolve(data)
+    }
+    queue.push({path, callback})
+    startLoader()
+  })
+}
+
+let isLoaderRunning = false
+function startLoader () {
+  if(!isLoaderRunning){
+    isLoaderRunning = true
+    loaderWork()
   }
-  catch(e) {
-    console.error(e)
+}
+
+async function loaderWork() {
+  let work = queue.shift()
+  console.log('loader work', work)
+  if(!work){
+    isLoaderRunning = false
+    return 
   }
-  console.log("image data" , data)
-  return _arrayBufferToBase64(data)
+  let data = await Neutralino.filesystem.readBinaryFile(work.path)
+  let base64data = _arrayBufferToBase64(data)
+  work.callback(base64data)
+  loaderWork()
 }
 
 function _arrayBufferToBase64( buffer ) {
