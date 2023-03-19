@@ -42,7 +42,7 @@
 	});
 
   function mapAction(element){
-    mymap = L.map(element, {preferCanvas: true }).setView([46.33, -1.31], 13)
+    mymap = L.map(element, {preferCanvas: true }).setView([46.31, -0.99], 13)
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
