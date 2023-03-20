@@ -20,28 +20,30 @@
 <div class="panel">
     {#if house}
         <div class="main-content">
-            <h1>
-                {house.title}
-            </h1>
-            
-            {#if currentImage}
-            <div class="">
-                <Image path={currentImage}></Image>
+            <div class="content-wrapper">
+                <h1>
+                    {house.title}
+                </h1>
+                
+                {#if currentImage}
+                <div class="image-wrapper">
+                    <Image path={currentImage}></Image>
+                </div>
+                {:else}
+                <div>
+                    Prix : {house.price} 
+                </div>
+                <div>
+                    Surface : {house.surface} m²
+                </div>
+                <div>
+                    Surface terrain : {house.surfaceTotal} m²
+                </div>
+                <div>
+                    Dossier images : {house.folderPath} - {house.folder}
+                </div>
+                {/if}
             </div>
-            {:else}
-            <div>
-                Prix : {house.price} 
-            </div>
-            <div>
-                Surface : {house.surface} m²
-            </div>
-            <div>
-                Surface terrain : {house.surfaceTotal} m²
-            </div>
-            <div>
-                Dossier images : {house.folderPath} - {house.folder}
-            </div>
-            {/if}
         </div>
         {#if house.files}
         <div class="footer">
@@ -63,5 +65,16 @@
         display:flex;
         flex-direction:column;
         /* align-items: center; */
+    }
+    .content-wrapper {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    .image-wrapper {
+        display:flex;
+        height: 100%;
+    }
+    .footer {
+        margin-bottom: 25px;
     }
 </style>

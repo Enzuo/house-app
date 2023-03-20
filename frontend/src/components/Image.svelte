@@ -17,7 +17,9 @@
 
 <style>
     img {
-        width:100%;
+        max-height: 100%;
+        max-width: 100%;
         background:#fafafa;
+        margin: 0 auto;
     }
 </style>

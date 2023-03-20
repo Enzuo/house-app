@@ -32,8 +32,10 @@
     {#each rooms as room}
     <div class="room" on:mouseover={addOverHandler(room)} on:focus={addOverHandler}>
         {#each room.photos as photo}
-            <div class="image" on:click={addClickHandler(path + '/' + photo)}>
-                <Image path={path + '/' + photo}/>
+            <div class="image" on:click={addClickHandler(path + '/' + photo)} on:keydown={addClickHandler(path + '/' + photo)}>
+                {#key path + '/' + photo}
+                    <Image path={path + '/' + photo}/>
+                {/key}
             </div>
         {/each}
     </div>
@@ -53,8 +55,8 @@
         border:1px solid #000;
     }
     .image {
-        width:150px;
-        height:150px;
+        width:125px;
+        height:125px;
         display: flex;
         align-items: center;
         overflow:hidden;

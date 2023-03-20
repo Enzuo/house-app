@@ -103,7 +103,7 @@
 <main>
   <div class="content">
     <div class="map-panel">
-      <div class="map" style="height:100vh;width:300px" use:mapAction />
+      <div class="map" style="height:100vh;width:400px" use:mapAction />
     </div>
     <div class="detail-panel">
       <HouseDetails on:status={(e) => status = e.detail.text} house={currentHouse}></HouseDetails>
@@ -127,6 +127,7 @@
   }
   .detail-panel {
     overflow: hidden;
+    flex-grow: 1;
   }
   .footer {
     position: fixed;
