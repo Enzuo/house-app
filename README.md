@@ -1,18 +1,22 @@
-# Run
+Desktop app to display houses on a map
+
+Built with Neutralino & svelte & leaflet.
+
+## Run
 
 ```
 npm run build-front
 npm start
 ```
 
-# Build
+## Build
 
 ```
-# TODO
+npm run build-front
 npm run build
 ```
 
-# Dev
+## Dev
 
 In a first terminal run the front end server
 ```
