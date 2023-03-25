@@ -183,14 +183,20 @@ function extractRoomsFromFiles(photoFiles){
  ------------------------- */
 // TODO add cache
 // TODO load one by one
-let queue = []
+let loaderQueue = []
+const cache = {}
 
 export async function loadImage(path){
   return new Promise((resolve, reject) => {
+    if (cache[path]) {
+      resolve(cache[path])
+      return
+    }
     let callback = (data) => {
+      cache[path] = data
       resolve(data)
     }
-    queue.push({path, callback})
+    loaderQueue.push({path, callback})
     startLoader()
   })
 }
@@ -204,7 +210,7 @@ function startLoader () {
 }
 
 async function loaderWork() {
-  let work = queue.shift()
+  let work = loaderQueue.shift()
   console.log('loader work', work)
   if(!work){
     isLoaderRunning = false
