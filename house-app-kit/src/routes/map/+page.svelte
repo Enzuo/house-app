@@ -9,7 +9,7 @@
     let mymap = $state()
     let myhouses
   
-    let currentHouse
+    let currentHouse = $state()
   
     let status = $state("")
 
@@ -49,7 +49,7 @@
     });
   
     function initMap(){
-      mymap = L.map('map', {preferCanvas: true }).setView([46.31, -0.99], 13)
+      mymap = L.map('map', {preferCanvas: true }).setView([46.82, -0.139], 8)
   
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,

@@ -9,7 +9,15 @@
     
     // Reset state on house change
     $ : {
-        if(house) currentImage = null
+        console.log('setting image', house)
+        if(house) {
+            currentImage = null
+
+            if(house.files && house.files.photoFiles) {
+                console.log(house.files.photoFiles)
+                currentImage = house.folderPath + '/' + house.files.photoFiles[0]
+            }
+        }
     }
 
     function handleImageClick (e) {

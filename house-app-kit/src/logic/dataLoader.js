@@ -4,12 +4,12 @@ import Papa from 'papaparse';
 
 
 const PATH_DATA = '../houses.csv';
-const PATH_IMG = '../images';
+const PATH_IMG = '/Users/enzo/Library/CloudStorage/OneDrive-Personal/Maison/photos/';
 
 async function loadData() {
   const dataPath = path.join(process.cwd(), PATH_DATA);
   let data = await fs.readFile(dataPath, { encoding: 'utf8' });
-  console.log(`csv file Content: ${data}`);
+  // console.log(`csv file Content: ${data}`);
   return data;
 }
 
@@ -18,7 +18,7 @@ export async function loadHouses() {
   let parsedData = Papa.parse(data, { header: true });
   let houses = parseHouseCsv(parsedData.data);
 
-  console.log('houses', parsedData, houses);
+  // console.log('houses', parsedData, houses);
   // .then(promiseCsvParser)
   // .then(parseHouseCsv)
   // .then((houses) => {
@@ -88,23 +88,20 @@ function parseHouseCsv(csvHouses) {
 export async function generateImageStructure(folder = './', houses) {
   folder = PATH_IMG
   let mainDirectory = await fs.readdir(folder, {withFileTypes: true});
-  for (var i = 2; i < mainDirectory.length; i++) {
+  for (var i = 0; i < mainDirectory.length; i++) {
     let entry = mainDirectory[i];
 
     if (entry.isDirectory()) {
       console.log('lets parse', folder + entry.name);
-      let subDirectory = await fs.readdir(folder + entry.name);
-      console.log('sub', subDirectory);
-      for (var j = 2; j < subDirectory.length; j++) {
-        for (var k = 0; k < houses.length; k++) {
-          let house = houses[k];
-          if (subDirectory[j].entry === house.folder) {
-            let folderPath = folder + entry.entry + '/' + house.folder;
-            let result = await parseImagesFolder(folderPath);
-            house.folderPath = folderPath;
-            house.files = result;
-          }
-        }
+      // let subDirectory = await fs.readdir(folder + entry.name);
+      // console.log('sub', subDirectory);
+      let house = houses.find((house) => house.folder === entry.name)
+
+      if(house){
+        let folderPath = folder + entry.name;
+        let result = await parseImagesFolder(folderPath);
+        house.folderPath = entry.name;
+        house.files = result;
       }
     }
   }
@@ -113,18 +110,18 @@ export async function generateImageStructure(folder = './', houses) {
 }
 
 async function parseImagesFolder(folder) {
-  console.log('parse Images Folder');
+  console.log('parse Images Folder', folder);
   let files = await fs.readdir(folder);
 
   let floors = [];
-  let photoFiles = files.reduce((acc, f, index) => {
-    if (index < 2) {
-      return acc;
-    }
-    if (f.entry.indexOf('floor') >= 0) {
-      floors.push(f.entry);
+  let photoFiles = files.reduce((acc, fileName, index) => {
+    // if (index < 2) {
+    //   return acc;
+    // }
+    if (fileName.indexOf('floor') >= 0) {
+      floors.push(fileName);
     } else {
-      acc.push(f.entry);
+      acc.push(fileName);
     }
     return acc;
   }, []);

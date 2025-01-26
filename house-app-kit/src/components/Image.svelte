@@ -15,6 +15,9 @@
     <img alt="img" src="data:image/jpeg;base64,{data}"/>
 {/if}
 
+<img alt="img" src="{'api/photos/' + path}"/>
+
+
 <style>
     img {
         max-height: 100%;
