@@ -32,7 +32,8 @@
                 <h1>
                     {house.title}
                 </h1>
-                
+                <a target="_blank" href={'https://www.google.com/maps/place/' + house.position[0] + ',' + house.position[1]}>Google map</a>
+
                 {#if currentImage}
                 <div class="image-wrapper">
                     <Image path={currentImage}></Image>
