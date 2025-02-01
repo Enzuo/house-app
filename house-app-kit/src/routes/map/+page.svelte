@@ -72,6 +72,7 @@
         if(house.files && house.files.photoFiles && house.files.photoFiles[0]) {
             var iconPath = 'api/photos/' + house.folderPath + '/' + house.files.photoFiles[0]
             var iconClass = house.position[0].toString().length > 5 ? 'precise' : ''
+            iconClass = house.isVisited ? 'visited' : iconClass
             icon = L.icon({
                 iconUrl: iconPath,
                 iconSize: [32, 32],

@@ -1,3 +1,7 @@
 .precise {
     border: 2px solid greenyellow;
 }
+
+.visited {
+    border: 2px solid purple;
+}

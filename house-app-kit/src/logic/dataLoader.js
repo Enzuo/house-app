@@ -55,6 +55,9 @@ function parseHouseCsv(csvHouses) {
     house.surfaceTotal = csvHouse['Surface Terrain'];
     house.options = csvHouse['Options'].split(',');
     house.folder = csvHouse['Folder'];
+    house.link = csvHouse['Lien'];
+
+    house.isVisited = csvHouse['Visite'] && csvHouse['Visite'].length > 0 && csvHouse['Visite'] !== 'Non' ? true : false
 
     // scan files :
     //   if(house.folder){
