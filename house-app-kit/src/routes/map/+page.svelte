@@ -68,7 +68,7 @@
         console.log("pos", house.position, house)
         if(!house.position[0]) continue // House data with no position, TODO might want to throw an error here
 
-        var icon
+        var icon = null
         if(house.files && house.files.photoFiles && house.files.photoFiles[0]) {
             var iconPath = 'api/photos/' + house.folderPath + '/' + house.files.photoFiles[0]
             var iconClass = house.position[0].toString().length > 5 ? 'precise' : ''
@@ -80,7 +80,13 @@
             });
         }
 
-        var marker = L.marker(house.position, {icon}).addTo(map)
+        var marker
+        if(icon){
+            marker = L.marker(house.position, {icon}).addTo(map) 
+        }
+        else {
+            marker = L.marker(house.position).addTo(map) 
+        }
         marker.bindPopup(generatePopupHandler(house))
         marker.on('click', generateClickHandler(house))
         marker.on('mouseover', generateOverHandler(house))

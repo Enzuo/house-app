@@ -118,6 +118,9 @@ async function parseImagesFolder(folder) {
 
   let floors = [];
   let photoFiles = files.reduce((acc, fileName, index) => {
+    if(fileName === '.DS_Store'){
+      return acc
+    }
     // if (index < 2) {
     //   return acc;
     // }

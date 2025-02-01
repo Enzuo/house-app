@@ -33,6 +33,7 @@
                     {house.title}
                 </h1>
                 <a target="_blank" href={'https://www.google.com/maps/place/' + house.position[0] + ',' + house.position[1]}>Google map</a>
+                <a target="_blank" href={"https://www.geoportail.gouv.fr/carte?c="+ house.position[1] + ',' + house.position[0] + "&z=19&l0=ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1)&l1=CADASTRALPARCELS.HISTO.2008-2013.PARCELS::GEOPORTAIL:OGC:WMTS(0.7)&l2=LANDCOVER.FORESTINVENTORY.V1::GEOPORTAIL:OGC:WMTS(1)&permalink=yes"}>GeoPortail</a>
                 {#if house.link}
                     <a target="_blank" href={house.link}>Lien annonce</a>
                 {/if}
