@@ -39,11 +39,6 @@
                 {/if}
 
 
-                {#if currentImage}
-                <div class="image-wrapper">
-                    <Image path={currentImage}></Image>
-                </div>
-                {:else}
                 <div>
                     Prix : {house.price} 
                 </div>
@@ -53,8 +48,15 @@
                 <div>
                     Surface terrain : {house.surfaceTotal} m²
                 </div>
+                {#if house.history && house.history.length > 0}
                 <div>
-                    Dossier images : {house.folderPath} - {house.folder}
+                    History : {house.history}
+                </div>
+                {/if}
+
+                {#if currentImage}
+                <div class="image-wrapper">
+                    <Image path={currentImage}></Image>
                 </div>
                 {/if}
             </div>

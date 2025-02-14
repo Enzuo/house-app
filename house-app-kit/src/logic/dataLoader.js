@@ -56,6 +56,7 @@ function parseHouseCsv(csvHouses) {
     house.options = csvHouse['Options'].split(',');
     house.folder = csvHouse['Folder'];
     house.link = csvHouse['Lien'];
+    house.history = csvHouse['Historique'];
 
     house.isVisited = csvHouse['Visite'] && csvHouse['Visite'].length > 0 && csvHouse['Visite'] !== 'Non' ? true : false
 
