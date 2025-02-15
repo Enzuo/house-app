@@ -40,8 +40,8 @@
     }
 
     function addClickHandler (imagePath, index) {
-        console.log(index)
         return () => {
+            currentImageIndex = index
             dispatch('click', {
                 imagePath
             })
@@ -111,7 +111,9 @@
         {#each roomsComputed as room}
         <div class="room" on:mouseover={addOverHandler(room)} on:focus={addOverHandler}>
             {#each room.photos as photo}
-                <div class="image" on:click={addClickHandler(path + '/' + photo.path, photo.index)} on:keydown={addClickHandler(path + '/' + photo.path, photo.index)}>
+                <div class={"image " + (photo.index===currentImageIndex ? "selected" : "")} 
+                    on:click={addClickHandler(path + '/' + photo.path, photo.index)} 
+                    on:keydown={addClickHandler(path + '/' + photo.path, photo.index)}>
                     {#key photo.index}
                         <Image path={path + '/' + photo.path}/>
                     {/key}
@@ -140,5 +142,8 @@
         display: flex;
         align-items: center;
         overflow:hidden;
+    }
+    .selected {
+        border: 1px solid green;
     }
 </style>
