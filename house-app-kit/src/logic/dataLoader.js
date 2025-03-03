@@ -50,6 +50,7 @@ function parseHouseCsv(csvHouses) {
     let house = {};
     house.position = csvHouse['Position'].split(',').map((a) => parseFloat(a));
     house.title = csvHouse['Title'];
+    house.city = csvHouse['Ville'];
     house.price = csvHouse['Price'];
     house.surface = csvHouse['Surface'];
     house.surfaceTotal = csvHouse['Surface Terrain'];

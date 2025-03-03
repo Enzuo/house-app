@@ -29,9 +29,14 @@
     {#if house}
         <div class="main-content">
             <div class="content-wrapper">
-                <h1>
-                    {house.title}
-                </h1>
+                <div class="title">
+                    <h1>
+                        {house.title}
+                    </h1>
+                    <div>
+                        {house.city} 
+                    </div>
+                </div>
                 <a target="_blank" href={'https://www.google.com/maps/place/' + house.position[0] + ',' + house.position[1]}>Google map</a>
                 <a target="_blank" href={"https://www.geoportail.gouv.fr/carte?c="+ house.position[1] + ',' + house.position[0] + "&z=19&l0=ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1)&l1=CADASTRALPARCELS.HISTO.2008-2013.PARCELS::GEOPORTAIL:OGC:WMTS(0.7)&l2=LANDCOVER.FORESTINVENTORY.V1::GEOPORTAIL:OGC:WMTS(1)&permalink=yes"}>GeoPortail</a>
                 <a target="_blank" href={"https://explore.data.gouv.fr/fr/immobilier?onglet=carte&filtre=tous&code=79116000AK&level=section&lat="+house.position[0]+"&lng="+house.position[1]+"&zoom=16"}>DVF</a>
@@ -93,5 +98,11 @@
     }
     .footer {
         margin-bottom: 25px;
+    }
+    h1 {
+        margin-bottom: 0px;
+    }
+    .title {
+        margin-bottom: 20px;
     }
 </style>
