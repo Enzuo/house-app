@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <a target="_blank" href={'https://www.google.com/maps/place/' + house.position[0] + ',' + house.position[1]}>Google map</a>
-                <a target="_blank" href={"https://www.geoportail.gouv.fr/carte?c="+ house.position[1] + ',' + house.position[0] + "&z=19&l0=ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1)&l1=CADASTRALPARCELS.HISTO.2008-2013.PARCELS::GEOPORTAIL:OGC:WMTS(0.7)&l2=LANDCOVER.FORESTINVENTORY.V1::GEOPORTAIL:OGC:WMTS(1)&permalink=yes"}>GeoPortail</a>
+                <a target="_blank" href={"https://www.geoportail.gouv.fr/carte?c="+ house.position[1] + ',' + house.position[0] + "&z=19&l0=ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1)&l1=CADASTRALPARCELS.HISTO.2008-2013.PARCELS::GEOPORTAIL:OGC:WMTS(0.7;h)&l2=PCRS.LAMB93::GEOPORTAIL:OGC:WMTS(1;h)&l3=CADASTRALPARCELS.PARCELLAIRE_EXPRESS::GEOPORTAIL:OGC:WMTS(1)&permalink=yes"}>GeoPortail</a>
                 <a target="_blank" href={"https://explore.data.gouv.fr/fr/immobilier?onglet=carte&filtre=tous&code=79116000AK&level=section&lat="+house.position[0]+"&lng="+house.position[1]+"&zoom=16"}>DVF</a>
                 {#if house.link}
                     <a target="_blank" href={house.link}>Lien annonce</a>
@@ -57,6 +57,11 @@
                 {#if house.history && house.history.length > 0}
                 <div>
                     History : {house.history}
+                </div>
+                {/if}
+                {#if house.observations && house.observations.length > 0}
+                <div>
+                    Observations : {house.observations}
                 </div>
                 {/if}
 

@@ -5,3 +5,7 @@
 .visited {
     border: 2px solid purple;
 }
+
+.hidden {
+    opacity: 0.3;
+}

@@ -61,6 +61,9 @@ function parseHouseCsv(csvHouses) {
 
     house.isVisited = csvHouse['Visite'] && csvHouse['Visite'].length > 0 && csvHouse['Visite'] !== 'Non' ? true : false
 
+    house.observations = csvHouse['Observations']
+    house.isHidden = csvHouse['Observations'].match(/^ *NO/i);
+
     // scan files :
     //   if(house.folder){
     //     let files = fs.readdirSync(path.join(FILEPATH, house.folder))
