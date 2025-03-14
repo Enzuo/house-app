@@ -4,6 +4,7 @@
     import StatusBar from '../../components/StatusBar.svelte'
     import { onMount, mount } from 'svelte'
     import * as L from "leaflet"
+    import ButtonToggle from '../../components/ButtonToggle.svelte';
   
   
     let mymap = $state()
@@ -12,6 +13,8 @@
     let currentHouse = $state()
   
     let status = $state("")
+
+    let isHiddingRejected = $state(true)
 
     let { data } = $props();
 
@@ -24,29 +27,22 @@
         }
     })
 
-  
-    // async function loadData () {
-    //   console.log('load data')
-    //   let data
-    //   try {
-    //     data = await Neutralino.filesystem.readFile('./houses.csv')
-    //     console.log('called neutralino')
-    //   }
-    //   catch (e) {
-    //     console.log('error', e)
-    //   }
-    //   console.log(`Content: ${data}`)
-    //   return data
-    // }
-  
-    // breaking reactivity ? TODO investigate
-    // $: displayHouses(mymap, myhouses) 
+    let layerHouses = L.layerGroup(); // Layer group to hold markers
+    let layerRejectedHouses = L.layerGroup(); // Layer group to hold markers
   
     onMount(async () => {
       status = "loading..."
       initMap()
       status = "Ok"
     });
+
+    $effect(() => {
+      if(isHiddingRejected){
+        mymap.removeLayer(layerRejectedHouses)
+      } else {
+        layerRejectedHouses.addTo(mymap)
+      }
+    })
   
     function initMap(){
       mymap = L.map('map', {preferCanvas: true }).setView([46.82, -0.139], 8)
@@ -55,6 +51,9 @@
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(mymap)
+
+      layerHouses.addTo(mymap)
+      layerRejectedHouses.addTo(mymap)
   
       return mymap
     }
@@ -73,7 +72,7 @@
             var iconPath = 'api/photos/' + house.folderPath + '/' + house.files.photoFiles[0]
             var iconClass = house.position[0].toString().length > 5 ? 'precise' : ''
             iconClass = house.isVisited ? 'visited' : iconClass
-            iconClass = house.isHidden ? iconClass + ' hidden' : iconClass
+            iconClass = house.isRejected ? iconClass + ' hidden' : iconClass
             icon = L.icon({
                 iconUrl: iconPath,
                 iconSize: [32, 32],
@@ -83,11 +82,19 @@
 
         var marker
         if(icon){
-            marker = L.marker(house.position, {icon}).addTo(map) 
+            marker = L.marker(house.position, {icon})
         }
         else {
-            marker = L.marker(house.position).addTo(map) 
+            marker = L.marker(house.position)
         }
+
+        if(house.isRejected){
+          marker.addTo(layerRejectedHouses)
+        }
+        else {
+          marker.addTo(layerHouses)
+        }
+
         marker.bindPopup(generatePopupHandler(house))
         marker.on('click', generateClickHandler(house))
         marker.on('mouseover', generateOverHandler(house))
@@ -131,6 +138,9 @@
     <div class="content">
       <div class="map-panel">
         <div id="map" style="height:100vh;width:700px" />
+        <div class="options">
+          <ButtonToggle label="Hide" bind:checked={isHiddingRejected}></ButtonToggle>
+        </div>
       </div>
       <div class="detail-panel">
         <HouseDetails on:status={(e) => status = e.detail.text} house={currentHouse}></HouseDetails>
@@ -164,6 +174,16 @@
       background: white;
       border-top: 1px solid lightgrey;
       padding: 2px 5px 5px 5px;
+    }
+
+    .map-panel {
+      position: relative;
+    }
+    .options {
+      position: absolute;
+      z-index: 9999;
+      right: 0;
+      top:0;
     }
   </style>
   
