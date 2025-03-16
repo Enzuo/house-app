@@ -2,9 +2,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import Papa from 'papaparse';
 
-
-const PATH_DATA = '../houses.csv';
-const PATH_IMG = '/Users/enzo/Library/CloudStorage/OneDrive-Personal/Maison/photos/';
+import { PATH_DATA, PATH_IMG } from './constants'
 
 async function loadData() {
   const dataPath = path.join(process.cwd(), PATH_DATA);

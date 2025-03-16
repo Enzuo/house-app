@@ -1,13 +1,14 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
+import { PATH_IMG } from '@/logic/constants.js';
+
 export async function GET({ params }) {
   const { filename, folder } = params;
 
   console.log('get image', folder, filename);
 
   // Specify the base directory where your images are located
-  const PATH_IMG = '/Users/enzo/Library/CloudStorage/OneDrive-Personal/Maison/photos/';
   const filePath = path.join(PATH_IMG, folder, filename);
 
   // Check if the file exists
