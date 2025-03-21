@@ -65,6 +65,7 @@
       for(var i=0; i<houses.length; i++){
         var house = houses[i]
         console.log("pos", house.position, house)
+        house.id = i
         if(!house.position[0]) continue // House data with no position, TODO might want to throw an error here
 
         var icon = null
@@ -94,6 +95,7 @@
         else {
           marker.addTo(layerHouses)
         }
+        house.marker = marker
 
         marker.bindPopup(generatePopupHandler(house))
         marker.on('click', generateClickHandler(house))
@@ -127,13 +129,39 @@
         status = house.title + " / " + house.price + " / " + house.surface + " m²"
       }
     }
+
+    function handleKeydown(event){
+      if(event.key === 'm'){
+        changeHouse(1)
+      }
+      if(event.key === 'p'){
+        changeHouse(-1)
+      }
+    }
+
+    function changeHouse(direction){
+      const index = currentHouse?.id || 0
+      console.log('changeHouse from actual', index)
+      currentHouse = data.houses[index + direction]
+
+      if(currentHouse.marker){
+        currentHouse.marker.openPopup()
+      }
+
+      if(currentHouse.position.length > 1){
+        mymap.setView(currentHouse.position);
+      }
+    }
   
-  </script>
+</script>
   
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
      integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
      crossorigin=""/>
   
+  <svelte:window onkeydown={handleKeydown} />
+
+
   <main>
     <div class="content">
       <div class="map-panel">
