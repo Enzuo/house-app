@@ -61,6 +61,7 @@ function parseHouseCsv(csvHouses) {
 
     house.observations = csvHouse['Observations']
     house.isRejected = csvHouse['Observations'].match(/^ *NO/i);
+    house.isSelected = csvHouse['Observations'].match(/^ *Y/i);
 
     // scan files :
     //   if(house.folder){

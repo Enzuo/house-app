@@ -1,9 +1,15 @@
-.precise {
+.leaflet-marker-icon.precise {
     border: 2px solid greenyellow;
 }
 
-.visited {
+.leaflet-marker-icon.visited {
     border: 2px solid purple;
+}
+
+
+.leaflet-marker-icon.selected {
+    /* border: 2px solid yellow; */
+    box-shadow: 0px 0px 5px 3px yellow;
 }
 
 .hidden {
