@@ -31,10 +31,10 @@
             <div class="content-wrapper">
                 <div class="title">
                     <h1>
-                        {house.title}
+                        {house.title} 
                     </h1>
                     <div>
-                        {house.city} 
+                        {house.id + 2} - {house.city}
                     </div>
                 </div>
                 <a target="_blank" href={'https://www.google.com/maps/place/' + house.position[0] + ',' + house.position[1]}>Google map</a>
