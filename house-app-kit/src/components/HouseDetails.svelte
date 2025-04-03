@@ -66,6 +66,11 @@
                     Observations : {house.observations}
                 </div>
                 {/if}
+                {#if house.school}
+                <div>
+                    Closest school : {house.school.distance.toFixed(2)} km - {house.school.name}
+                </div>
+                {/if}
 
                 {#if currentImage}
                 <div class="image-wrapper">

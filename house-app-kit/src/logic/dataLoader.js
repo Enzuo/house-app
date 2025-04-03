@@ -2,7 +2,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import Papa from 'papaparse';
 
-import { PATH_DATA, PATH_IMG } from './constants'
+import { PATH_DATA, PATH_IMG, PATH_SCHOOL_DATA } from './constants'
 
 async function loadData() {
   const dataPath = path.join(process.cwd(), PATH_DATA);
@@ -11,10 +11,89 @@ async function loadData() {
   return data;
 }
 
+/**
+ * https://www.data.gouv.fr/fr/datasets/localisations-des-etablissements-scolaires-dans-openstreetmap/
+ * 
+ */
+async function loadSchoolData(){
+  console.log('LOAD SCHOOLS')
+  const dataPath = path.join(process.cwd(), PATH_SCHOOL_DATA);
+  let data = await fs.readFile(dataPath, { encoding: 'utf8' });
+  let parsedData = Papa.parse(data, { header: true });
+
+  let schools = parsedData.data.map(school => {
+    // school.the_geom
+    const match = school?.the_geom?.match(/POINT \((-?[\d.]+) (-?[\d.]+)\)/);
+    if (match) {
+      const x = parseFloat(match[1]);
+      const y = parseFloat(match[2]);
+      let {lon, lat} = epsg3857To4326(x, y)
+      school.position = [lat, lon]
+    }
+    return {
+      name : school.name, 
+      amenity : school.amenity, 
+      position : school.position,
+    }
+  })
+
+  console.log('parsed schools?', parsedData.data[0], schools[0])
+  console.log('parsed schools?', parsedData.data[48441], schools[48441])
+
+  return schools
+}
+/**
+ * convert EPSG:3857 (Web Mercator meters) to EPSG:4326 (WGS84 Latitude/Longitude)
+ * @param {*} x 
+ * @param {*} y 
+ * @returns 
+ */
+function epsg3857To4326(x, y) {
+  const R = 6378137;
+  const lon = (x / R) * (180 / Math.PI);
+  const lat = (Math.atan(Math.sinh(y / R)) * (180 / Math.PI));
+  return { lon, lat };
+}
+
+function haversineDistance(lon1, lat1, lon2, lat2) {
+  const R = 6371; // Radius of the Earth in km
+  const toRad = (deg) => deg * (Math.PI / 180);
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+}
+
+function findClosest(lat, lon, locations) {
+  let closest = null;
+  let minDistance = Infinity;
+
+  for (var i =0; i<locations.length; i++) {
+    const location = locations[i]
+    if(!location || !location.position) continue
+    const [ target_lat, target_lon ] = location.position;
+    const distance = haversineDistance(lon, lat, target_lon, target_lat);
+    
+    if (distance < minDistance) {
+        minDistance = distance;
+        closest = { ...location, distance };
+    }
+  }
+  
+  return closest;
+}
+
 export async function loadHouses() {
   let data = await loadData();
   let parsedData = Papa.parse(data, { header: true });
-  let houses = parseHouseCsv(parsedData.data);
+  let schools = await loadSchoolData()
+  let houses = parseHouseCsv(parsedData.data, schools);
+
 
   // console.log('houses', parsedData, houses);
   // .then(promiseCsvParser)
@@ -40,7 +119,7 @@ export async function loadHouses() {
 //     })
 // }
 
-function parseHouseCsv(csvHouses) {
+function parseHouseCsv(csvHouses, schools) {
   let houses = [];
 
   for (var i = 0; i < csvHouses.length; i++) {
@@ -62,6 +141,13 @@ function parseHouseCsv(csvHouses) {
     house.observations = csvHouse['Observations']
     house.isRejected = csvHouse['Observations'].match(/^ *NO/i);
     house.isSelected = csvHouse['Observations'].match(/^ *Y/i);
+
+    if(house.position && schools){
+      let school = findClosest(house.position[0], house.position[1], schools)
+      // let school
+      // console.log(house.folder, house.position, school)
+      house.school = school
+    }
 
     // scan files :
     //   if(house.folder){
@@ -99,7 +185,7 @@ export async function generateImageStructure(folder = './', houses) {
     let entry = mainDirectory[i];
 
     if (entry.isDirectory()) {
-      console.log('lets parse', folder + entry.name);
+      // console.log('lets parse', folder + entry.name);
       // let subDirectory = await fs.readdir(folder + entry.name);
       // console.log('sub', subDirectory);
       let house = houses.find((house) => house.folder === entry.name)
@@ -112,12 +198,12 @@ export async function generateImageStructure(folder = './', houses) {
       }
     }
   }
-  console.log('houses with files', houses);
+  // console.log('houses with files', houses);
   return houses;
 }
 
 async function parseImagesFolder(folder) {
-  console.log('parse Images Folder', folder);
+  // console.log('parse Images Folder', folder);
   let files = await fs.readdir(folder);
 
   let floors = [];
@@ -136,7 +222,7 @@ async function parseImagesFolder(folder) {
     return acc;
   }, []);
 
-  console.log('photoFiles', photoFiles);
+  // console.log('photoFiles', photoFiles);
 
   let rooms = extractRoomsFromFiles(photoFiles);
   return { rooms, photoFiles, floors };

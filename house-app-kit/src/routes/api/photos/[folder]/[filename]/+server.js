@@ -6,7 +6,7 @@ import { PATH_IMG } from '@/logic/constants.js';
 export async function GET({ params }) {
   const { filename, folder } = params;
 
-  console.log('get image', folder, filename);
+  // console.log('get image', folder, filename);
 
   // Specify the base directory where your images are located
   const filePath = path.join(PATH_IMG, folder, filename);
