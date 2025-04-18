@@ -1,8 +1,9 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import Papa from 'papaparse';
+import sharp from 'sharp';
 
-import { PATH_DATA, PATH_IMG, PATH_SCHOOL_DATA } from './constants'
+import { PATH_DATA, PATH_IMG, PATH_SCHOOL_DATA, PATH_THUMBNAIL, SIZE_THUMBNAIL } from './constants'
 
 async function loadData() {
   const dataPath = path.join(process.cwd(), PATH_DATA);
@@ -37,8 +38,8 @@ async function loadSchoolData(){
     }
   })
 
-  console.log('parsed schools?', parsedData.data[0], schools[0])
-  console.log('parsed schools?', parsedData.data[48441], schools[48441])
+  // console.log('parsed schools?', parsedData.data[0], schools[0])
+  // console.log('parsed schools?', parsedData.data[48441], schools[48441])
 
   return schools
 }
@@ -181,6 +182,14 @@ function parseHouseCsv(csvHouses, schools) {
 export async function generateImageStructure(folder = './', houses) {
   folder = PATH_IMG
   let mainDirectory = await fs.readdir(folder, {withFileTypes: true});
+  
+  
+  let thumbImage
+
+  // thumbnails directory
+  ensureDirectory(PATH_THUMBNAIL)
+
+
   for (var i = 0; i < mainDirectory.length; i++) {
     let entry = mainDirectory[i];
 
@@ -195,11 +204,73 @@ export async function generateImageStructure(folder = './', houses) {
         let result = await parseImagesFolder(folderPath);
         house.folderPath = entry.name;
         house.files = result;
+
+        thumbImage = house.files.photoFiles[0]
+        generateThumbnail(house.folderPath, thumbImage)
       }
     }
   }
   // console.log('houses with files', houses);
   return houses;
+}
+
+
+async function ensureDirectory(dirPath) {
+  try {
+    const stat = await fs.stat(dirPath);
+    if (!stat.isDirectory()) {
+      throw new Error(`${dirPath} exists but is not a directory`);
+    }
+    console.log('Directory already exists:', dirPath);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      // Directory does not exist
+      await fs.mkdir(dirPath, { recursive: true });
+      console.log('Directory created:', dirPath);
+    } else {
+      throw err; // Some other error, rethrow it
+    }
+  }
+}
+
+
+async function fileExists(filePath) {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      return false; // File doesn't exist
+    }
+    throw err; // Some other error occurred
+  }
+}
+
+/**
+ * 
+ * @param {string} filePath 
+ * @param {string} imageFile 
+ */
+async function generateThumbnail(filePath, imageFile){
+  console.log('generate thumbnail', filePath, imageFile)
+
+  let outputPath = path.join(PATH_THUMBNAIL, filePath + '_' + imageFile)
+  let isThumbnailAlreadyGenerated = await fileExists(outputPath)
+  if(isThumbnailAlreadyGenerated){
+    console.log('already generated')
+    return
+  }
+  
+  let inputPath = path.join(PATH_IMG, filePath, imageFile)
+  try {
+    await sharp(inputPath)
+    .resize(...SIZE_THUMBNAIL)
+    .jpeg({ quality: 70 })
+    .toFile(outputPath);
+  }
+  catch(e){
+    console.log('Error on generating thumbnail', filePath, imageFile)
+  }
 }
 
 async function parseImagesFolder(folder) {

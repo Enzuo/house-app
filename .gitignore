@@ -17,4 +17,6 @@ neutralino.js
 node_modules
 
 # Data
-Aiguillon
+thumbnails
+houses.csv
+schools_point.csv

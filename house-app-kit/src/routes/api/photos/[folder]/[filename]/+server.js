@@ -1,15 +1,21 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { PATH_IMG } from '@/logic/constants.js';
+import { PATH_IMG, PATH_THUMBNAIL } from '@/logic/constants.js';
 
-export async function GET({ params }) {
+export async function GET({ url, params }) {
   const { filename, folder } = params;
+  const isThumb = url.searchParams.get('thumb');
 
-  // console.log('get image', folder, filename);
 
-  // Specify the base directory where your images are located
-  const filePath = path.join(PATH_IMG, folder, filename);
+  let filePath
+  if(isThumb){
+    filePath = path.join(PATH_THUMBNAIL, folder + '_' + filename);
+  }
+  else {
+    filePath = path.join(PATH_IMG, folder, filename);
+  }
+  
 
   // Check if the file exists
   if (!fs.existsSync(filePath)) {

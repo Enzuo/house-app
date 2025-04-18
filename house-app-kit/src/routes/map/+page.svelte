@@ -70,7 +70,7 @@
 
         var icon = null
         if(house.files && house.files.photoFiles && house.files.photoFiles[0]) {
-            var iconPath = 'api/photos/' + house.folderPath + '/' + house.files.photoFiles[0]
+            var iconPath = 'api/photos/' + house.folderPath + '/' + house.files.photoFiles[0] + '?thumb=true'
             var iconClass = house.position[0].toString().length > 5 ? 'precise' : ''
             iconClass = house.isVisited ? 'visited' : iconClass
             iconClass = house.isSelected ? iconClass + ' selected' : iconClass
