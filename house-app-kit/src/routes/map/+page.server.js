@@ -9,11 +9,5 @@ export async function load({ params }) {
 	// 	}
 	// };
 	let houses = await loadHouses()
-	try {
-		houses = await generateImageStructure("../", houses)
-	}
-	catch(e){
-		console.log(e)
-	}
 	return {houses}
 }

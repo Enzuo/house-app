@@ -3,7 +3,7 @@ import * as path from 'path';
 import Papa from 'papaparse';
 import sharp from 'sharp';
 
-import { PATH_DATA, PATH_IMG, PATH_SCHOOL_DATA, PATH_THUMBNAIL, SIZE_THUMBNAIL } from './constants'
+import { PATH_DATA, PATH_DATA_COMPUTED, PATH_IMG, PATH_SCHOOL_DATA, PATH_THUMBNAIL, SIZE_THUMBNAIL } from './constants'
 
 async function loadData() {
   const dataPath = path.join(process.cwd(), PATH_DATA);
@@ -90,18 +90,35 @@ function findClosest(lat, lon, locations) {
 }
 
 export async function loadHouses() {
-  let data = await loadData();
-  let parsedData = Papa.parse(data, { header: true });
-  let schools = await loadSchoolData()
-  let houses = parseHouseCsv(parsedData.data, schools);
+  const dataPathComputed = path.join(process.cwd(), PATH_DATA_COMPUTED);
+
+  let houses
+
+  try {
+    const content = await fs.readFile(dataPathComputed, 'utf-8');
+    houses = JSON.parse(content);
+    console.log('Loading houses data from already computed file')
+  } 
+  catch (err) {
+
+    let data = await loadData();
+    let parsedData = Papa.parse(data, { header: true });
+    let schools = await loadSchoolData()
+    houses = parseHouseCsv(parsedData.data, schools);
+    await generateImageStructure(null, houses)
 
 
-  // console.log('houses', parsedData, houses);
-  // .then(promiseCsvParser)
-  // .then(parseHouseCsv)
-  // .then((houses) => {
-  //     console.log('Houses', houses)
-  // })
+    await fs.writeFile(dataPathComputed, JSON.stringify(houses))
+
+
+    // console.log('houses', parsedData, houses);
+    // .then(promiseCsvParser)
+    // .then(parseHouseCsv)
+    // .then((houses) => {
+    //     console.log('Houses', houses)
+    // })
+  }
+
   return houses;
 }
 
