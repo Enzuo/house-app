@@ -73,6 +73,7 @@
             var iconPath = 'api/photos/' + house.folderPath + '/' + house.files.photoFiles[0] + '?thumb=true'
             var iconClass = house.position[0].toString().length > 5 ? 'precise' : ''
             iconClass = house.isVisited ? 'visited' : iconClass
+            iconClass = house.isFavorite ? iconClass + ' favorite' : iconClass
             iconClass = house.isSelected ? iconClass + ' selected' : iconClass
             iconClass = house.isRejected ? iconClass + ' hidden' : iconClass
             icon = L.icon({

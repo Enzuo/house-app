@@ -12,6 +12,11 @@
     box-shadow: 0px 0px 5px 3px yellow;
 }
 
+.leaflet-marker-icon.favorite {
+    /* border: 2px solid yellow; */
+    box-shadow: 0px 0px 5px 3px rgb(208, 36, 94);
+}
+
 .hidden {
     opacity: 0.3;
 }

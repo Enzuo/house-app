@@ -159,6 +159,7 @@ function parseHouseCsv(csvHouses, schools) {
     house.observations = csvHouse['Observations']
     house.isRejected = csvHouse['Observations'].match(/^ *NO/i);
     house.isSelected = csvHouse['Observations'].match(/^ *Y/i);
+    house.isFavorite = csvHouse['Observations'].match(/^ *Ya/i);
 
     if(house.position && schools){
       let school = findClosest(house.position[0], house.position[1], schools)
