@@ -273,7 +273,12 @@ export async function generateImageStructure(folder = './', houses) {
         house.files = result;
 
         thumbImage = house.files.photoFiles[0]
-        generateThumbnail(house.folderPath, thumbImage)
+        try {
+          generateThumbnail(house.folderPath, thumbImage)
+        }
+        catch(e){
+          console.log(e, house, thumbImage)
+        }
       }
     }
   }
@@ -328,15 +333,15 @@ async function generateThumbnail(filePath, imageFile){
     return
   }
   
-  let inputPath = path.join(PATH_IMG, filePath, imageFile)
   try {
+    let inputPath = path.join(PATH_IMG, filePath, imageFile)
     await sharp(inputPath)
     .resize(...SIZE_THUMBNAIL)
     .jpeg({ quality: 70 })
     .toFile(outputPath);
   }
   catch(e){
-    console.log('Error on generating thumbnail', filePath, imageFile)
+    console.log('Error on generating thumbnail', filePath, imageFile, e)
   }
 }
 
