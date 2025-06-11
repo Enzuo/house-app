@@ -3,7 +3,7 @@ import * as path from 'path';
 import Papa from 'papaparse';
 import sharp from 'sharp';
 
-import { PATH_DATA, PATH_DATA_COMPUTED, PATH_IMG, PATH_SCHOOL_DATA, PATH_THUMBNAIL, SIZE_THUMBNAIL } from './constants'
+import { PATH_DATA, PATH_DATA_COMPUTED, PATH_IMG, PATH_SCHOOL_DATA, PATH_TRAIN_DATA, PATH_THUMBNAIL, SIZE_THUMBNAIL } from './constants'
 
 async function loadData() {
   const dataPath = path.join(process.cwd(), PATH_DATA);
@@ -56,6 +56,33 @@ function epsg3857To4326(x, y) {
   return { lon, lat };
 }
 
+/**
+ * https://www.data.gouv.fr/fr/datasets/liste-des-gares/
+ */
+async function loadTrainData(){
+  console.log('LOAD TRAIN STATIONS')
+  const dataPath = path.join(process.cwd(), PATH_TRAIN_DATA)
+  let data = await fs.readFile(dataPath, { encoding: 'utf8' })
+  let parsedData = Papa.parse(data, { header: true });
+
+  let stations = parsedData.data.map(station => {
+
+    const match = station['Geo Point']?.match(/(-?\d+(?:\.\d+)?), *(-?\d+(?:\.\d+)?)/);
+    if (match) {
+      const x = parseFloat(match[1]);
+      const y = parseFloat(match[2]);
+      // let {lon, lat} = epsg3857To4326(x, y)
+      station.position = [x, y]
+    }
+    return {
+      name : station['LIBELLE'], 
+      type : station['VOYAGEURS'],
+      position : station.position,
+    }
+  })
+  return stations.filter(station => station.type === 'O')
+}
+
 function haversineDistance(lon1, lat1, lon2, lat2) {
   const R = 6371; // Radius of the Earth in km
   const toRad = (deg) => deg * (Math.PI / 180);
@@ -70,6 +97,13 @@ function haversineDistance(lon1, lat1, lon2, lat2) {
   return R * c; // Distance in km
 }
 
+/**
+ * 
+ * @param {number} lat 
+ * @param {number} lon 
+ * @param {{position : [number, number]}[]} locations 
+ * @returns 
+ */
 function findClosest(lat, lon, locations) {
   let closest = null;
   let minDistance = Infinity;
@@ -85,7 +119,6 @@ function findClosest(lat, lon, locations) {
         closest = { ...location, distance };
     }
   }
-  
   return closest;
 }
 
@@ -104,7 +137,10 @@ export async function loadHouses() {
     let data = await loadData();
     let parsedData = Papa.parse(data, { header: true });
     let schools = await loadSchoolData()
+    let stations = await loadTrainData()
     houses = parseHouseCsv(parsedData.data, schools);
+    // TODO compute dist to school in a seperate function
+    houses = computeDistanceToTrainStations(houses, stations)
     await generateImageStructure(null, houses)
 
 
@@ -197,6 +233,19 @@ function parseHouseCsv(csvHouses, schools) {
   return houses;
 }
 
+function computeDistanceToTrainStations(houses, stations){
+  for(let i=0; i< houses.length; i++){
+    let house = houses[i]
+    if(house.position){
+      let station = findClosest(house.position[0], house.position[1], stations)
+      // let school
+      // console.log(house.folder, house.position, school)
+      house.trainStation = station
+    }
+  }
+  return houses
+}
+
 export async function generateImageStructure(folder = './', houses) {
   folder = PATH_IMG
   let mainDirectory = await fs.readdir(folder, {withFileTypes: true});
@@ -270,12 +319,12 @@ async function fileExists(filePath) {
  * @param {string} imageFile 
  */
 async function generateThumbnail(filePath, imageFile){
-  console.log('generate thumbnail', filePath, imageFile)
+  // console.log('generate thumbnail', filePath, imageFile)
 
   let outputPath = path.join(PATH_THUMBNAIL, filePath + '_' + imageFile)
   let isThumbnailAlreadyGenerated = await fileExists(outputPath)
   if(isThumbnailAlreadyGenerated){
-    console.log('already generated')
+    // console.log('already generated')
     return
   }
   

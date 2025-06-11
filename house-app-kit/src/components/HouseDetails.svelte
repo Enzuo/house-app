@@ -71,6 +71,11 @@
                     Closest school : {house.school.distance.toFixed(2)} km - {house.school.name}
                 </div>
                 {/if}
+                {#if house.trainStation}
+                <div>
+                    Closest train station : {house.trainStation.distance.toFixed(2)} km - {house.trainStation.name}
+                </div>
+                {/if}
 
                 {#if currentImage}
                 <div class="image-wrapper">
