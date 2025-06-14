@@ -68,6 +68,18 @@
         house.id = i
         if(!house.position[0]) continue // House data with no position, TODO might want to throw an error here
 
+        // Filters houses
+        if(house.trainStation.distance > 10){
+          house.isRejected = true
+        }
+        const numericPrice = parseInt(house.price.replace(/[^\d\s]/g, '').replace(/\s/g, ''), 10);
+        if(numericPrice > 200000){
+          house.isRejected = true
+        }
+        if(house.school.distance > 2){
+          house.isRejected = true
+        }
+
         var icon = null
         if(house.files && house.files.photoFiles && house.files.photoFiles[0]) {
             var iconPath = 'api/photos/' + house.folderPath + '/' + house.files.photoFiles[0] + '?thumb=true'
