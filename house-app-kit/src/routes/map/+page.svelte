@@ -2,6 +2,7 @@
     import HousePopup from '../../components/HousePopup.svelte'
     import HouseDetails from '../../components/HouseDetails.svelte'
     import StatusBar from '../../components/StatusBar.svelte'
+    import FilterBar from '@/components/FilterBar.svelte'
     import { onMount, mount } from 'svelte'
     import * as L from "leaflet"
     import ButtonToggle from '../../components/ButtonToggle.svelte';
@@ -18,8 +19,14 @@
 
     let { data } = $props();
 
+    // Filters
+    let maxPrice = $state()
+    let schoolDistance = $state()
+    let trainStationDistance = $state()
+
     $effect(() => {
         console.log('svelte effect', data)
+        console.log('maxPrice changed to:', maxPrice);
         if (data && mymap) {
             console.log('rendering data on map')
             console.log('Data has been loaded:', data);
@@ -62,22 +69,30 @@
       console.log("displayHouses")
       if(!houses) return
       if(!map) return
+
+      // Clear layers
+      layerHouses.clearLayers();
+      layerRejectedHouses.clearLayers();
+
       for(var i=0; i<houses.length; i++){
         var house = houses[i]
-        console.log("pos", house.position, house)
         house.id = i
         if(!house.position[0]) continue // House data with no position, TODO might want to throw an error here
 
         // Filters houses
-        if(house.trainStation.distance > 10){
-          house.isRejected = true
+        house.isHidden = false
+        if(house.isRejected){
+          house.isHidden = true
+        }
+        if(trainStationDistance && house.trainStation.distance > trainStationDistance){
+          house.isHidden = true
         }
         const numericPrice = parseInt(house.price.replace(/[^\d\s]/g, '').replace(/\s/g, ''), 10);
-        if(numericPrice > 200000){
-          house.isRejected = true
+        if(maxPrice && numericPrice > maxPrice){
+          house.isHidden = true
         }
-        if(house.school.distance > 2){
-          house.isRejected = true
+        if(schoolDistance && house.school.distance > schoolDistance){
+          house.isHidden = true
         }
 
         var icon = null
@@ -87,7 +102,7 @@
             iconClass = house.isVisited ? 'visited' : iconClass
             iconClass = house.isFavorite ? iconClass + ' favorite' : iconClass
             iconClass = house.isSelected ? iconClass + ' selected' : iconClass
-            iconClass = house.isRejected ? iconClass + ' hidden' : iconClass
+            iconClass = house.isHidden ? iconClass + ' hidden' : iconClass
             icon = L.icon({
                 iconUrl: iconPath,
                 iconSize: [32, 32],
@@ -103,7 +118,7 @@
             marker = L.marker(house.position)
         }
 
-        if(house.isRejected){
+        if(house.isHidden){
           marker.addTo(layerRejectedHouses)
         }
         else {
@@ -115,6 +130,7 @@
         marker.on('click', generateClickHandler(house))
         marker.on('mouseover', generateOverHandler(house))
       } 
+      return {layerHouses, layerRejectedHouses}
     }
   
     function generatePopupHandler(house){
@@ -177,6 +193,11 @@
 
 
   <main>
+    <FilterBar 
+      bind:maxPrice={maxPrice} 
+      bind:schoolDistance={schoolDistance} 
+      bind:trainStationDistance={trainStationDistance} 
+    />
     <div class="content">
       <div class="map-panel">
         <div id="map" style="height:100vh;width:700px" />
